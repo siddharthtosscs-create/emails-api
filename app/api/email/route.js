@@ -8,6 +8,18 @@ import { NextResponse } from 'next/server';
 const FIXED_RECIPIENT_EMAIL = "siddharth.toss.cs@gmail.com"; // <-- ENTER YOUR RECIPIENT EMAIL HERE
 // ============================================
 
+// CORS headers
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+// Handle OPTIONS request for CORS preflight
+export async function OPTIONS() {
+    return NextResponse.json({}, { headers: corsHeaders });
+}
+
 export async function GET() {
     const data = {
         message: 'Hello from the Email API',
@@ -25,7 +37,7 @@ export async function GET() {
             }
         }
     }
-    return Response.json({ data })
+    return NextResponse.json({ data }, { headers: corsHeaders })
 }
 
 const transporter = nodemailer.createTransport({
@@ -47,7 +59,7 @@ export async function POST(req) {
         if (!name || !email || !mobileNumber || !message) {
             return NextResponse.json({ 
                 error: 'All fields are required: name, email, mobileNumber, message' 
-            }, { status: 400 });
+            }, { status: 400, headers: corsHeaders });
         }
 
         // Format email body with Name, Email, Mobile Number, and Message
@@ -84,12 +96,12 @@ export async function POST(req) {
                 to: FIXED_RECIPIENT_EMAIL,
                 subject: 'Contact Form Submission'
             }
-        }, { status: 200 });
+        }, { status: 200, headers: corsHeaders });
 
     } catch (error) {
         console.error('Email Send Error:', error);
         return NextResponse.json({ 
             error: error.message || 'Failed to send email' 
-        }, { status: 500 });
+        }, { status: 500, headers: corsHeaders });
     }
 }

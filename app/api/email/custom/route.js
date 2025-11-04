@@ -1,6 +1,18 @@
 import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
 
+// CORS headers
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+// Handle OPTIONS request for CORS preflight
+export async function OPTIONS() {
+    return NextResponse.json({}, { headers: corsHeaders });
+}
+
 export async function GET() {
     const data = {
         message: 'Hello from the Custom Email API',
@@ -25,7 +37,7 @@ export async function GET() {
         },
         note: 'This endpoint allows you to specify custom SMTP credentials for each request'
     }
-    return Response.json({ data })
+    return NextResponse.json({ data }, { headers: corsHeaders })
 }
 
 export async function POST(req) {
@@ -59,7 +71,7 @@ export async function POST(req) {
         if (!smtpUser || !smtpPass || !senderEmail || !senderName || !recipientEmail || !subject || !message) {
             return NextResponse.json({ 
                 error: 'All fields are required: smtpUser, smtpPass, senderEmail, senderName, recipientEmail, subject, message' 
-            }, { status: 400 });
+            }, { status: 400, headers: corsHeaders });
         }
 
         // Create transporter with custom credentials
@@ -81,7 +93,7 @@ export async function POST(req) {
             console.error('SMTP verification failed:', verifyError);
             return NextResponse.json({ 
                 error: 'SMTP connection failed. Please check your credentials and settings.' 
-            }, { status: 400 });
+            }, { status: 400, headers: corsHeaders });
         }
 
         const mailOptions = {
@@ -114,12 +126,12 @@ export async function POST(req) {
                 to: recipientEmail,
                 subject: subject
             }
-        }, { status: 200 });
+        }, { status: 200, headers: corsHeaders });
 
     } catch (error) {
         console.error('Custom Email Send Error:', error);
         return NextResponse.json({ 
             error: error.message || 'Failed to send email with custom SMTP' 
-        }, { status: 500 });
+        }, { status: 500, headers: corsHeaders });
     }
 }
