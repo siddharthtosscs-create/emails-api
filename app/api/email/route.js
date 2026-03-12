@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 // FIXED RECIPIENT EMAIL ADDRESS
 // Enter the recipient email address below:
 // ============================================
-const FIXED_RECIPIENT_EMAIL = "siddharth.toss.cs@gmail.com"; // <-- ENTER YOUR RECIPIENT EMAIL HERE
+const FIXED_RECIPIENT_EMAIL = "two8ai@gmail.com"; // <-- ENTER YOUR RECIPIENT EMAIL HERE
 // ============================================
 
 // CORS headers
